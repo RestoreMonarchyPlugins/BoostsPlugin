@@ -1,4 +1,6 @@
 ﻿using BoostsPlugin.Models;
+using Rocket.Unturned.Chat;
+using Rocket.Unturned.Player;
 using SDG.Unturned;
 using System;
 using System.Collections.Generic;
@@ -15,130 +17,157 @@ namespace BoostsPlugin.Components
 
         public Player Player { get; private set; }
 
-        public List<BoostItem> Boosters { get; private set; }
+        public List<Booster> Boosters { get; private set; }
 
-        public BoostItem CurrentSpeedBooster { get; set; }
-        public BoostItem CurrentJumpBooster { get; set; }
+        public Booster CurrentSpeedBooster { get; set; }
+        public Booster CurrentJumpBooster { get; set; }
 
-        public void DefaultSpeedBooster()
+        public void ChangeSpeedBooster(Booster booster)
         {
-            Player.movement.sendPluginSpeedMultiplier(1);
-            CurrentSpeedBooster = null;
-        }
-
-        public void DefaultJumpBooster()
-        {
-            Player.movement.sendPluginJumpMultiplier(1);
-            CurrentSpeedBooster = null;
-        }
-
-        public void ChangeSpeedBooster(BoostItem booster)
-        {
-            Player.movement.sendPluginSpeedMultiplier(booster.SpeedBoost);
             CurrentSpeedBooster = booster;
+            Player.movement.sendPluginSpeedMultiplier(CurrentSpeedBooster?.BoostItem?.SpeedBoost ?? 1);            
+            UnturnedChat.Say($"Changed your speed boost to {Player.movement.pluginSpeedMultiplier}");
         }
 
-        public void ChangeJumpBooster(BoostItem booster)
+        public void ChangeJumpBooster(Booster booster)
         {
-            Player.movement.sendPluginJumpMultiplier(booster.JumpBoost);
             CurrentJumpBooster = booster;
+            Player.movement.sendPluginJumpMultiplier(CurrentJumpBooster?.BoostItem?.JumpBoost ?? 1);
+            UnturnedChat.Say($"Changed your jump boost to {Player.movement.pluginJumpMultiplier}");
         }
 
         void Awake()
         {
             Player = GetComponent<Player>();
-            Boosters = new List<BoostItem>();
+            Boosters = new List<Booster>();
         }
         
         void Start()
         {
             Player.equipment.onEquipRequested += OnEquipRequested;
+            Player.equipment.onDequipRequested += OnDequipRequested;
             Player.inventory.onInventoryAdded += OnInventoryAdded;
             Player.inventory.onInventoryRemoved += OnInventoryRemoved;
+
+            ReloadBoosters();
         }
 
         void OnDestroy()
         {
             Player.equipment.onEquipRequested -= OnEquipRequested;
+            Player.equipment.onDequipRequested -= OnDequipRequested;
             Player.inventory.onInventoryAdded -= OnInventoryAdded;
             Player.inventory.onInventoryRemoved -= OnInventoryRemoved;
         }
 
         private void OnEquipRequested(PlayerEquipment equipment, ItemJar jar, ItemAsset asset, ref bool shouldAllow)
         {
+            UnturnedChat.Say("OnEquipRequested");
             ApplyBoost(asset.id, true);
+        }
+
+        private void OnDequipRequested(PlayerEquipment equipment, ref bool shouldAllow)
+        {
+            UnturnedChat.Say("OnDequipRequested");
+            RemoveBoost(equipment.itemID, true);
         }
 
         private void OnInventoryAdded(byte page, byte index, ItemJar jar)
         {
+            UnturnedChat.Say("OnInventoryAdded");
             ApplyBoost(jar.item.id, false);
         }
 
         private void OnInventoryRemoved(byte page, byte index, ItemJar jar)
         {
-            RemoveBoost(jar.item.id);
+            UnturnedChat.Say("OnInventoryRemoved");
+            RemoveBoost(jar.item.id, false);
         }
 
         public void ApplyBoost(ushort itemId, bool isEquip)
         {
-            var booster = pluginInstance.Configuration.Instance.BoosterItems.FirstOrDefault(x => x.ItemId == itemId);
-            if (booster == null)
+            UnturnedChat.Say($"Boosters count {Boosters.Count}");
+            var boostItem = pluginInstance.Configuration.Instance.BoosterItems.FirstOrDefault(x => x.ItemId == itemId);
+            if (boostItem == null)
                 return;
 
-            if (!isEquip || (booster.RequireEquip && isEquip))
+            UnturnedChat.Say($"Boosters count {Boosters.Count}");
+
+            if (boostItem.RequireEquip && !isEquip)
             {
-                if (booster.SpeedBoost > Player.movement.pluginSpeedMultiplier)
-                {
-                    ChangeSpeedBooster(booster);
-                }
-                    
-                if (booster.JumpBoost > Player.movement.pluginJumpMultiplier)
-                {
-                    ChangeJumpBooster(booster);
-                }                    
+                UnturnedChat.Say("Not normal booster");
+                return;
             }
 
+            if (isEquip && !boostItem.RequireEquip)
+            {
+                UnturnedChat.Say("Already applied so skipping");
+                return;
+            }
+
+            var booster = new Booster(boostItem);
             Boosters.Add(booster);
+
+            if (CurrentSpeedBooster == null || boostItem.SpeedBoost > CurrentSpeedBooster.BoostItem.SpeedBoost)
+            {
+                ChangeSpeedBooster(booster);
+            }
+
+            if (CurrentJumpBooster == null || boostItem.JumpBoost > CurrentJumpBooster.BoostItem.JumpBoost)
+            {
+                ChangeJumpBooster(booster);
+            }
         }
 
-        public void RemoveBoost(ushort itemId)
+        public void RemoveBoost(ushort itemId, bool isEquip)
         {
-            var booster = pluginInstance.Configuration.Instance.BoosterItems.FirstOrDefault(x => x.ItemId == itemId);
+            UnturnedChat.Say($"Boosters count {Boosters.Count}");
+            var booster = Boosters.FirstOrDefault(x => x.BoostItem.ItemId == itemId);
             if (booster == null)
                 return;
+
+            UnturnedChat.Say($"Boosters count {Boosters.Count}");
+
+            if (isEquip && !booster.BoostItem.RequireEquip)
+            {
+                UnturnedChat.Say("Normal booster");
+                return;
+            }                
 
             Boosters.Remove(booster);
 
-            if (CurrentJumpBooster == booster || CurrentSpeedBooster == booster)
-            {
-                UseBestBoosters();
-            }
+            if (CurrentSpeedBooster == booster)
+                UseBestSpeedBooster();
+
+            if (CurrentJumpBooster == booster)
+                UseBestJumpBooster();
         }
 
-        public void UseBestBoosters()
+        public void UseBestSpeedBooster()
         {
-            BoostItem bestSpeedBooster = Boosters.FirstOrDefault();
-            BoostItem bestJumpBooster = Boosters.FirstOrDefault();
+            Booster bestSpeedBooster = Boosters.ElementAtOrDefault(0);
 
-            foreach (var booster in Boosters)
+            for (int i = 1; i < Boosters.Count; i++)
             {
-                if (booster.SpeedBoost > bestSpeedBooster.SpeedBoost)
-                    bestSpeedBooster = booster;
-                if (booster.JumpBoost > bestJumpBooster.JumpBoost)
-                    bestJumpBooster = booster;
+                if (Boosters[i].BoostItem.SpeedBoost > bestSpeedBooster.BoostItem.SpeedBoost)
+                    bestSpeedBooster = Boosters[i];
             }
-                
-            if (bestSpeedBooster == null && bestJumpBooster == null)
-            {
-                DefaultSpeedBooster();
-                DefaultJumpBooster();                
-            }
-
             ChangeSpeedBooster(bestSpeedBooster);
+        }
+
+        public void UseBestJumpBooster()
+        {
+            Booster bestJumpBooster = Boosters.ElementAtOrDefault(0);
+
+            for (int i = 1; i < Boosters.Count; i++)
+            {                
+                if (Boosters[i].BoostItem.JumpBoost > bestJumpBooster.BoostItem.JumpBoost)
+                    bestJumpBooster = Boosters[i];
+            }            
             ChangeJumpBooster(bestJumpBooster);
         }
 
-        public void Refresh()
+        public void ReloadBoosters()
         {
             Boosters.Clear();
 
@@ -150,7 +179,8 @@ namespace BoostsPlugin.Components
                 }
             }
 
-            ApplyBoost(Player.equipment.asset.id, true);
+            if (Player.equipment.isEquipped)
+                ApplyBoost(Player.equipment.itemID, true);
         }
     }
 }

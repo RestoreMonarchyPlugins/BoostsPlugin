@@ -70,6 +70,7 @@
     <Compile Include="BoostsPlugin.cs" />
     <Compile Include="Components\PlayerBoostsComponent.cs" />
     <Compile Include="Models\ArmorClothing.cs" />
+    <Compile Include="Models\Booster.cs" />
     <Compile Include="Models\BoostItem.cs" />
     <Compile Include="Modifiers\ItemClothingModifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

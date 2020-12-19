@@ -14,7 +14,7 @@ namespace BoostsPlugin.Modifiers
     {
         public static void ApplyArmors(ArmorClothing[] armorClothings)
         {
-            var armorField = typeof(ItemClothingAsset).GetField("_amor", BindingFlags.NonPublic | BindingFlags.Instance);
+            var armorField = typeof(ItemClothingAsset).GetField("_armor", BindingFlags.NonPublic | BindingFlags.Instance);
             var explosionArmorField = typeof(ItemClothingAsset).GetField("_explosionArmor", BindingFlags.NonPublic | BindingFlags.Instance);
 
             foreach (var armorClothing in armorClothings)

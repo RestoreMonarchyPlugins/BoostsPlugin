@@ -24,7 +24,9 @@ namespace BoostsPlugin
                 new BoostItem()
                 {
                     ItemId = 363,
-                     
+                    SpeedBoost = 2,
+                    JumpBoost = 1.5f,
+                    RequireEquip = true
                 }
             };
         }
