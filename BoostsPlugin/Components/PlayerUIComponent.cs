@@ -29,7 +29,7 @@ namespace BoostsPlugin.Components
 
         void Start()
         {
-            EffectManager.sendUIEffect(pluginInstance.Configuration.Instance.EffectId, Key, true);
+            EffectManager.sendUIEffect(pluginInstance.Configuration.Instance.EffectId, Key, CSteamID, true);
             RefreshArmorUI();
             RefreshBoostsUI();
 
@@ -73,12 +73,14 @@ namespace BoostsPlugin.Components
 
         private string GetArmorString(float armor)
         {
-            if (armor > 1)
+            decimal armorDec = Math.Abs((decimal)armor);
+            if (armorDec > 1)
             {
-                return $"-{(int)((armor - 1) * 100)}%";
-            } else if (armor < 1)
+                return $"-{(int)((armorDec - 1) * 100)}%";
+            }
+            else if (armorDec < 1)
             {
-                return $"+{(int)((1 - armor) * 100)}%";
+                return $"+{(int)((1 - armorDec) * 100)}%";
             } else
             {
                 return "0%";
@@ -93,12 +95,13 @@ namespace BoostsPlugin.Components
 
         public string GetBoostString(float boost)
         {
-            if (boost > 1)
+            decimal boostDec = (decimal)boost;
+            if (boostDec > 1)
             {
-                return $"+{(int)((boost - 1) * 100)}%";
-            } else if (boost < 1)
+                return $"+{(int)((boostDec - 1) * 100)}%";
+            } else if (boostDec < 1)
             {
-                return $"-{(int)(boost * 100)}%";
+                return $"-{(int)(boostDec * 100)}%";
             } else 
             {
                 return "0%";

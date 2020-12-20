@@ -1,7 +1,9 @@
 ﻿using BoostsPlugin.Components;
 using BoostsPlugin.Modifiers;
+using Rocket.API.Collections;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
+using Rocket.Core.Utils;
 using Rocket.Unturned;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
@@ -43,8 +45,11 @@ namespace BoostsPlugin
 
         private void OnPlayerConnected(UnturnedPlayer player)
         {
-            player.Player.gameObject.AddComponent<PlayerBoostsComponent>();
-            player.Player.gameObject.AddComponent<PlayerUIComponent>();
+            TaskDispatcher.QueueOnMainThread(() =>
+            {
+                player.Player.gameObject.AddComponent<PlayerBoostsComponent>();
+                player.Player.gameObject.AddComponent<PlayerUIComponent>();
+            });            
         }
     }
 }
