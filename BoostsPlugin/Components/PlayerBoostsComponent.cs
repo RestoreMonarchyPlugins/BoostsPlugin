@@ -22,10 +22,14 @@ namespace BoostsPlugin.Components
         public Booster CurrentSpeedBooster { get; set; }
         public Booster CurrentJumpBooster { get; set; }
 
+        public delegate void BoostUpdated();
+        public event BoostUpdated OnBoostUpdated;
+
         public void ChangeSpeedBooster(Booster booster)
         {
             CurrentSpeedBooster = booster;
-            Player.movement.sendPluginSpeedMultiplier(CurrentSpeedBooster?.BoostItem?.SpeedBoost ?? 1);            
+            Player.movement.sendPluginSpeedMultiplier(CurrentSpeedBooster?.BoostItem?.SpeedBoost ?? 1);
+            OnBoostUpdated?.Invoke();
             UnturnedChat.Say($"Changed your speed boost to {Player.movement.pluginSpeedMultiplier}");
         }
 
@@ -33,6 +37,7 @@ namespace BoostsPlugin.Components
         {
             CurrentJumpBooster = booster;
             Player.movement.sendPluginJumpMultiplier(CurrentJumpBooster?.BoostItem?.JumpBoost ?? 1);
+            OnBoostUpdated?.Invoke();
             UnturnedChat.Say($"Changed your jump boost to {Player.movement.pluginJumpMultiplier}");
         }
 

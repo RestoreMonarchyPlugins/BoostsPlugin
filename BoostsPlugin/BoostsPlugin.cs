@@ -44,6 +44,7 @@ namespace BoostsPlugin
         private void OnPlayerConnected(UnturnedPlayer player)
         {
             player.Player.gameObject.AddComponent<PlayerBoostsComponent>();
+            player.Player.gameObject.AddComponent<PlayerUIComponent>();
         }
     }
 }

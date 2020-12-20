@@ -69,6 +69,7 @@
     <Compile Include="BoostsConfiguration.cs" />
     <Compile Include="BoostsPlugin.cs" />
     <Compile Include="Components\PlayerBoostsComponent.cs" />
+    <Compile Include="Components\PlayerUIComponent.cs" />
     <Compile Include="Models\ArmorClothing.cs" />
     <Compile Include="Models\Booster.cs" />
     <Compile Include="Models\BoostItem.cs" />
