@@ -30,7 +30,6 @@ namespace BoostsPlugin.Components
             CurrentSpeedBooster = booster;
             Player.movement.sendPluginSpeedMultiplier(CurrentSpeedBooster?.BoostItem?.SpeedBoost ?? 1);
             OnBoostUpdated?.Invoke();
-            UnturnedChat.Say($"Changed your speed boost to {Player.movement.pluginSpeedMultiplier}");
         }
 
         public void ChangeJumpBooster(Booster booster)
@@ -38,7 +37,6 @@ namespace BoostsPlugin.Components
             CurrentJumpBooster = booster;
             Player.movement.sendPluginJumpMultiplier(CurrentJumpBooster?.BoostItem?.JumpBoost ?? 1);
             OnBoostUpdated?.Invoke();
-            UnturnedChat.Say($"Changed your jump boost to {Player.movement.pluginJumpMultiplier}");
         }
 
         void Awake()
@@ -67,46 +65,38 @@ namespace BoostsPlugin.Components
 
         private void OnEquipRequested(PlayerEquipment equipment, ItemJar jar, ItemAsset asset, ref bool shouldAllow)
         {
-            UnturnedChat.Say("OnEquipRequested");
             ApplyBoost(asset.id, true);
         }
 
         private void OnDequipRequested(PlayerEquipment equipment, ref bool shouldAllow)
         {
-            UnturnedChat.Say("OnDequipRequested");
             RemoveBoost(equipment.itemID, true);
         }
 
         private void OnInventoryAdded(byte page, byte index, ItemJar jar)
         {
-            UnturnedChat.Say("OnInventoryAdded");
             ApplyBoost(jar.item.id, false);
         }
 
         private void OnInventoryRemoved(byte page, byte index, ItemJar jar)
         {
-            UnturnedChat.Say("OnInventoryRemoved");
             RemoveBoost(jar.item.id, false);
         }
 
         public void ApplyBoost(ushort itemId, bool isEquip)
         {
-            UnturnedChat.Say($"Boosters count {Boosters.Count}");
             var boostItem = pluginInstance.Configuration.Instance.BoosterItems.FirstOrDefault(x => x.ItemId == itemId);
             if (boostItem == null)
                 return;
 
-            UnturnedChat.Say($"Boosters count {Boosters.Count}");
 
             if (boostItem.RequireEquip && !isEquip)
             {
-                UnturnedChat.Say("Not normal booster");
                 return;
             }
 
             if (isEquip && !boostItem.RequireEquip)
             {
-                UnturnedChat.Say("Already applied so skipping");
                 return;
             }
 
@@ -126,16 +116,12 @@ namespace BoostsPlugin.Components
 
         public void RemoveBoost(ushort itemId, bool isEquip)
         {
-            UnturnedChat.Say($"Boosters count {Boosters.Count}");
             var booster = Boosters.FirstOrDefault(x => x.BoostItem.ItemId == itemId);
             if (booster == null)
                 return;
 
-            UnturnedChat.Say($"Boosters count {Boosters.Count}");
-
             if (isEquip && !booster.BoostItem.RequireEquip)
             {
-                UnturnedChat.Say("Normal booster");
                 return;
             }                
 

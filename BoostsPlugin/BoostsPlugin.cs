@@ -49,7 +49,7 @@ namespace BoostsPlugin
             {
                 player.Player.gameObject.AddComponent<PlayerBoostsComponent>();
                 player.Player.gameObject.AddComponent<PlayerUIComponent>();
-            });            
+            });
         }
     }
 }

@@ -60,6 +60,17 @@ namespace BoostsPlugin.Components
 
         private void RefreshArmorUI()
         {
+            if ((Player.clothing.hatAsset == null || Player.clothing.hatAsset.armor == 1)
+                && (Player.clothing.shirtAsset == null || Player.clothing.shirtAsset.armor == 1)
+                && (Player.clothing.vestAsset == null || Player.clothing.vestAsset.armor == 1) 
+                && (Player.clothing.pantsAsset == null || Player.clothing.pantsAsset.armor == 1))
+            {
+                EffectManager.sendUIEffectVisibility(Key, CSteamID, true, "Armor", false);
+                return;
+            }
+
+            EffectManager.sendUIEffectVisibility(Key, CSteamID, true, "Armor", true);
+
             EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor0", GetArmorString(Player.clothing.hatAsset?.armor ?? 1));
             EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion0", GetArmorString(Player.clothing.hatAsset?.explosionArmor ?? 1));
             EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor1", GetArmorString(Player.clothing.shirtAsset?.armor ?? 1));
@@ -67,8 +78,7 @@ namespace BoostsPlugin.Components
             EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor2", GetArmorString(Player.clothing.vestAsset?.armor ?? 1));
             EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion2", GetArmorString(Player.clothing.vestAsset?.explosionArmor ?? 1));
             EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor3", GetArmorString(Player.clothing.pantsAsset?.armor ?? 1));
-            EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion3", GetArmorString(Player.clothing.pantsAsset?.explosionArmor ?? 1));
-            
+            EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion3", GetArmorString(Player.clothing.pantsAsset?.explosionArmor ?? 1));            
         }
 
         private string GetArmorString(float armor)
@@ -89,6 +99,14 @@ namespace BoostsPlugin.Components
 
         private void RefreshBoostsUI()
         {
+            if (Player.movement.pluginSpeedMultiplier == 1 && Player.movement.pluginJumpMultiplier == 1)
+            {
+                EffectManager.sendUIEffectVisibility(Key, CSteamID, true, "Boosts", false);
+                return;
+            }
+
+            EffectManager.sendUIEffectVisibility(Key, CSteamID, true, "Boosts", true);
+
             EffectManager.sendUIEffectText(Key, CSteamID, true, "Speed1", GetBoostString(Player.movement.pluginSpeedMultiplier));
             EffectManager.sendUIEffectText(Key, CSteamID, true, "Jump1", GetBoostString(Player.movement.pluginJumpMultiplier));
         }
