@@ -32,6 +32,8 @@ namespace BoostsPlugin
             }
 
             U.Events.OnPlayerConnected += OnPlayerConnected;
+            VehicleManager.onEnterVehicleRequested += OnEnterVehicleRequested;
+            VehicleManager.onSwapSeatRequested += OnSwapSeatRequested;
 
             Logger.Log($"{Name} {Assembly.GetName().Version} has been loaded!", ConsoleColor.Yellow);
         }
@@ -39,8 +41,26 @@ namespace BoostsPlugin
         protected override void Unload()
         {
             U.Events.OnPlayerConnected -= OnPlayerConnected;
+            VehicleManager.onEnterVehicleRequested -= OnEnterVehicleRequested;
+            VehicleManager.onSwapSeatRequested -= OnSwapSeatRequested;
 
             Logger.Log($"{Name} {Assembly.GetName().Version} has been unloaded!", ConsoleColor.Yellow);
+        }
+
+        private void OnEnterVehicleRequested(Player player, InteractableVehicle vehicle, ref bool shouldAllow)
+        {
+            if (vehicle.tryAddPlayer(out byte seat, player) && seat == 0)
+            {
+                player.GetComponent<PlayerBoostsComponent>().RemoveBoost(player.equipment.itemID, true);
+            }
+        }
+
+        private void OnSwapSeatRequested(Player player, InteractableVehicle vehicle, ref bool shouldAllow, byte fromSeatIndex, ref byte toSeatIndex)
+        {
+            if (toSeatIndex == 0)
+            {
+                player.GetComponent<PlayerBoostsComponent>().RemoveBoost(player.equipment.itemID, true);
+            }
         }
 
         private void OnPlayerConnected(UnturnedPlayer player)
@@ -49,7 +69,7 @@ namespace BoostsPlugin
             {
                 player.Player.gameObject.AddComponent<PlayerBoostsComponent>();
                 player.Player.gameObject.AddComponent<PlayerUIComponent>();
-            });
+            }, 2);
         }
     }
 }
