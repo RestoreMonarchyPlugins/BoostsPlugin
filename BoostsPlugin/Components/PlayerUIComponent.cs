@@ -61,8 +61,6 @@ namespace BoostsPlugin.Components
 
         private void RefreshArmorUI()
         {
-            UnturnedChat.Say("RefreshArmorUI called");
-
             if ((Player.clothing.hatAsset == null || Player.clothing.hatAsset.armor == 1)
                 && (Player.clothing.shirtAsset == null || Player.clothing.shirtAsset.armor == 1)
                 && (Player.clothing.vestAsset == null || Player.clothing.vestAsset.armor == 1) 

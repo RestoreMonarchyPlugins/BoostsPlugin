@@ -46,7 +46,6 @@ namespace BoostsPlugin.Services
 
         private void DamagePants(PlayerClothing clothing)
         {
-            Console.WriteLine("DAMAGE PANTS");
             if (clothing.pants != 0)
             {
                 clothing.pantsQuality--;
@@ -56,7 +55,6 @@ namespace BoostsPlugin.Services
 
         private void DamageShirt(PlayerClothing clothing)
         {
-            Console.WriteLine("DAMAGE SHIRT");
             if (clothing.shirt != 0)
             {
                 clothing.shirtQuality--;
@@ -66,7 +64,6 @@ namespace BoostsPlugin.Services
 
         private void DamageVest(PlayerClothing clothing)
         {
-            Console.WriteLine("DAMAGE VEST");
             if (clothing.vest != 0)
             {
                 clothing.vestQuality--;
@@ -76,7 +73,6 @@ namespace BoostsPlugin.Services
 
         private void DamageHat(PlayerClothing clothing)
         {
-            Console.WriteLine("DAMAGE HAT");
             if (clothing.hat != 0)
             {
                 clothing.hatQuality--;
