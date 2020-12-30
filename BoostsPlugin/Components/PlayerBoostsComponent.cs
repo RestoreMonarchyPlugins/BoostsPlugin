@@ -22,8 +22,10 @@ namespace BoostsPlugin.Components
 
         public Dictionary<UnturnedPlayerEvents.Wearables, ushort>  Clothings { get; private set; }
 
-        public Booster CurrentSpeedBooster { get; set; }
-        public Booster CurrentJumpBooster { get; set; }
+        public Booster CurrentSpeedBooster { get; private set; }
+        public Booster CurrentJumpBooster { get; private set; }
+
+        public Booster EquippedBooster { get; private set; }
 
         public delegate void BoostUpdated();
         public event BoostUpdated OnBoostUpdated;
@@ -69,7 +71,10 @@ namespace BoostsPlugin.Components
 
         private void OnEquipRequested(PlayerEquipment equipment, ItemJar jar, ItemAsset asset, ref bool shouldAllow)
         {
-            ApplyBoost(asset.id, true);
+            if (EquippedBooster != null)
+                RemoveBoost(EquippedBooster.BoostItem.ItemId, true);
+            
+            EquippedBooster = ApplyBoost(asset.id, true);
         }
 
         private void OnDequipRequested(PlayerEquipment equipment, ref bool shouldAllow)
@@ -87,20 +92,20 @@ namespace BoostsPlugin.Components
             RemoveBoost(jar.item.id, false);
         }
 
-        public void ApplyBoost(ushort itemId, bool isEquip)
+        public Booster ApplyBoost(ushort itemId, bool isEquip)
         {
             var boostItem = pluginInstance.Configuration.Instance.BoosterItems.FirstOrDefault(x => x.ItemId == itemId);
             if (boostItem == null)
-                return;
+                return null;
 
             if (boostItem.RequireEquip && !isEquip)
             {
-                return;
+                return null;
             }
 
             if (isEquip && !boostItem.RequireEquip)
             {
-                return;
+                return null;
             }
 
             var booster = new Booster(boostItem);
@@ -115,6 +120,8 @@ namespace BoostsPlugin.Components
             {
                 ChangeJumpBooster(booster);
             }
+
+            return booster;
         }
 
         public void RemoveBoost(ushort itemId, bool isEquip)
@@ -186,6 +193,8 @@ namespace BoostsPlugin.Components
                 ApplyBoost(Player.clothing.mask, true);
             if (Player.clothing.glasses != 0)
                 ApplyBoost(Player.clothing.glasses, true);
+            if (Player.clothing.backpack != 0)
+                ApplyBoost(Player.clothing.backpack, true);
             
             Clothings.Add(UnturnedPlayerEvents.Wearables.Shirt, Player.clothing.shirt);
             Clothings.Add(UnturnedPlayerEvents.Wearables.Pants, Player.clothing.pants);
@@ -193,6 +202,7 @@ namespace BoostsPlugin.Components
             Clothings.Add(UnturnedPlayerEvents.Wearables.Hat, Player.clothing.hat);
             Clothings.Add(UnturnedPlayerEvents.Wearables.Mask, Player.clothing.mask);
             Clothings.Add(UnturnedPlayerEvents.Wearables.Glasses, Player.clothing.glasses);
+            Clothings.Add(UnturnedPlayerEvents.Wearables.Backpack, Player.clothing.backpack);
 
             if (Player.equipment.isEquipped)
                 ApplyBoost(Player.equipment.itemID, true);
