@@ -1,5 +1,6 @@
 ﻿using BoostsPlugin.Models;
 using Rocket.Unturned.Chat;
+using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using System;
@@ -18,6 +19,8 @@ namespace BoostsPlugin.Components
         public Player Player { get; private set; }
 
         public List<Booster> Boosters { get; private set; }
+
+        public Dictionary<UnturnedPlayerEvents.Wearables, ushort>  Clothings { get; private set; }
 
         public Booster CurrentSpeedBooster { get; set; }
         public Booster CurrentJumpBooster { get; set; }
@@ -43,6 +46,7 @@ namespace BoostsPlugin.Components
         {
             Player = GetComponent<Player>();
             Boosters = new List<Booster>();
+            Clothings = new Dictionary<UnturnedPlayerEvents.Wearables, ushort>();
         }
         
         void Start()
@@ -88,7 +92,6 @@ namespace BoostsPlugin.Components
             var boostItem = pluginInstance.Configuration.Instance.BoosterItems.FirstOrDefault(x => x.ItemId == itemId);
             if (boostItem == null)
                 return;
-
 
             if (boostItem.RequireEquip && !isEquip)
             {
@@ -161,6 +164,7 @@ namespace BoostsPlugin.Components
         public void ReloadBoosters()
         {
             Boosters.Clear();
+            Clothings.Clear();
 
             for (byte page = 0; page < 7; page++)
             {
@@ -169,6 +173,26 @@ namespace BoostsPlugin.Components
                     ApplyBoost(Player.inventory.getItem(page, index).item.id, false);
                 }
             }
+
+            if (Player.clothing.shirt != 0)
+                ApplyBoost(Player.clothing.shirt, true);
+            if (Player.clothing.pants != 0)
+                ApplyBoost(Player.clothing.pants, true);
+            if (Player.clothing.vest != 0)
+                ApplyBoost(Player.clothing.vest, true);
+            if (Player.clothing.hat != 0)
+                ApplyBoost(Player.clothing.hat, true);
+            if (Player.clothing.mask != 0)
+                ApplyBoost(Player.clothing.mask, true);
+            if (Player.clothing.glasses != 0)
+                ApplyBoost(Player.clothing.glasses, true);
+            
+            Clothings.Add(UnturnedPlayerEvents.Wearables.Shirt, Player.clothing.shirt);
+            Clothings.Add(UnturnedPlayerEvents.Wearables.Pants, Player.clothing.pants);
+            Clothings.Add(UnturnedPlayerEvents.Wearables.Vest, Player.clothing.vest);
+            Clothings.Add(UnturnedPlayerEvents.Wearables.Hat, Player.clothing.hat);
+            Clothings.Add(UnturnedPlayerEvents.Wearables.Mask, Player.clothing.mask);
+            Clothings.Add(UnturnedPlayerEvents.Wearables.Glasses, Player.clothing.glasses);
 
             if (Player.equipment.isEquipped)
                 ApplyBoost(Player.equipment.itemID, true);

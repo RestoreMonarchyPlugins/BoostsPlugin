@@ -9,7 +9,7 @@ namespace BoostsPlugin.Models
     public class ArmorClothing
     {
         public ushort ItemId { get; set; }
-        public float Armor { get; set; }
-        public float ExplosionArmor { get; set; }
+        public float Armor { get; set; } 
+        public float ExplosionArmor { get; set; }   
     }
 }

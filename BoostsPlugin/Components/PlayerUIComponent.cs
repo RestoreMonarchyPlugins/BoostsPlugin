@@ -1,4 +1,5 @@
-﻿using SDG.Unturned;
+﻿using Rocket.Unturned.Chat;
+using SDG.Unturned;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -60,6 +61,8 @@ namespace BoostsPlugin.Components
 
         private void RefreshArmorUI()
         {
+            UnturnedChat.Say("RefreshArmorUI called");
+
             if ((Player.clothing.hatAsset == null || Player.clothing.hatAsset.armor == 1)
                 && (Player.clothing.shirtAsset == null || Player.clothing.shirtAsset.armor == 1)
                 && (Player.clothing.vestAsset == null || Player.clothing.vestAsset.armor == 1) 
@@ -71,26 +74,49 @@ namespace BoostsPlugin.Components
 
             EffectManager.sendUIEffectVisibility(Key, CSteamID, true, "Armor", true);
 
-            EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor0", GetArmorString(Player.clothing.hatAsset?.armor ?? 1));
-            EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion0", GetArmorString(Player.clothing.hatAsset?.explosionArmor ?? 1));
-            EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor1", GetArmorString(Player.clothing.shirtAsset?.armor ?? 1));
-            EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion1", GetArmorString(Player.clothing.shirtAsset?.explosionArmor ?? 1));
-            EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor2", GetArmorString(Player.clothing.vestAsset?.armor ?? 1));
-            EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion2", GetArmorString(Player.clothing.vestAsset?.explosionArmor ?? 1));
-            EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor3", GetArmorString(Player.clothing.pantsAsset?.armor ?? 1));
-            EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion3", GetArmorString(Player.clothing.pantsAsset?.explosionArmor ?? 1));            
+            RefreshHatArmor();
+            RefreshShirtArmor();
+            RefreshVestArmor();
+            RefreshPantsArmor();
         }
 
-        private string GetArmorString(float armor)
+        public void RefreshHatArmor()
+        {
+            EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor0", GetArmorString(Player.clothing.hatAsset?.armor ?? 1, Player.clothing.hatQuality));
+            EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion0", GetArmorString(Player.clothing.hatAsset?.explosionArmor ?? 1, Player.clothing.hatQuality));
+        }
+
+        public void RefreshShirtArmor()
+        {
+            EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor1", GetArmorString(Player.clothing.shirtAsset?.armor ?? 1, Player.clothing.shirtQuality));
+            EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion1", GetArmorString(Player.clothing.shirtAsset?.explosionArmor ?? 1, Player.clothing.shirtQuality));
+        }
+
+        public void RefreshVestArmor()
+        {
+            EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor2", GetArmorString(Player.clothing.vestAsset?.armor ?? 1, Player.clothing.vestQuality));
+            EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion2", GetArmorString(Player.clothing.vestAsset?.explosionArmor ?? 1, Player.clothing.vestQuality));
+        }
+
+        public void RefreshPantsArmor()
+        {
+            EffectManager.sendUIEffectText(Key, CSteamID, true, "Armor3", GetArmorString(Player.clothing.pantsAsset?.armor ?? 1, Player.clothing.pantsQuality));
+            EffectManager.sendUIEffectText(Key, CSteamID, true, "Explosion3", GetArmorString(Player.clothing.pantsAsset?.explosionArmor ?? 1, Player.clothing.pantsQuality));
+        }
+
+        private string GetArmorString(float armor, byte quality)
         {
             decimal armorDec = Math.Abs((decimal)armor);
+
             if (armorDec > 1)
             {
                 return $"-{(int)((armorDec - 1) * 100)}%";
             }
-            else if (armorDec < 1)
+            if (armorDec < 1)
             {
-                return $"+{(int)((1 - armorDec) * 100)}%";
+                decimal actualArmor = (1 - armorDec) * 100;
+                actualArmor *= (decimal)quality / 100;
+                return $"+{(int)actualArmor}%";
             } else
             {
                 return "0%";
@@ -124,6 +150,6 @@ namespace BoostsPlugin.Components
             {
                 return "0%";
             }
-        }        
+        }
     }
 }

@@ -1,17 +1,15 @@
 ﻿using BoostsPlugin.Components;
 using BoostsPlugin.Modifiers;
-using Rocket.API.Collections;
+using BoostsPlugin.Services;
+using HarmonyLib;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
 using Rocket.Core.Utils;
 using Rocket.Unturned;
+using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BoostsPlugin
 {
@@ -19,9 +17,18 @@ namespace BoostsPlugin
     {
         public static BoostsPlugin Instance { get; private set; }
 
+        public ArmorsDurabilityService ArmorsDurabilityService { get; private set; }
+
+        public const string HarmonyInstanceId = "com.restoremonarchy.boostsplugin";
+        private Harmony Harmony { get; set; }
+
         protected override void Load()
         {
             Instance = this;
+            Harmony = new Harmony(HarmonyInstanceId);
+            Harmony.PatchAll(Assembly);
+
+            ArmorsDurabilityService = gameObject.AddComponent<ArmorsDurabilityService>();
 
             if (Level.isLoaded)
             {
@@ -35,16 +42,39 @@ namespace BoostsPlugin
             VehicleManager.onEnterVehicleRequested += OnEnterVehicleRequested;
             VehicleManager.onSwapSeatRequested += OnSwapSeatRequested;
 
+            UnturnedPlayerEvents.OnPlayerWear += OnPlayerWear;
+
             Logger.Log($"{Name} {Assembly.GetName().Version} has been loaded!", ConsoleColor.Yellow);
         }
 
         protected override void Unload()
         {
+            Harmony.UnpatchAll();
+            Destroy(ArmorsDurabilityService);
+
             U.Events.OnPlayerConnected -= OnPlayerConnected;
             VehicleManager.onEnterVehicleRequested -= OnEnterVehicleRequested;
             VehicleManager.onSwapSeatRequested -= OnSwapSeatRequested;
 
+            UnturnedPlayerEvents.OnPlayerWear -= OnPlayerWear;
+
             Logger.Log($"{Name} {Assembly.GetName().Version} has been unloaded!", ConsoleColor.Yellow);
+        }
+
+        private void OnPlayerWear(UnturnedPlayer player, UnturnedPlayerEvents.Wearables wear, ushort id, byte? quality)
+        {
+            var comp = player.GetComponent<PlayerBoostsComponent>();
+            
+            if (comp.Clothings[wear] != 0)
+            {
+                comp.RemoveBoost(comp.Clothings[wear], true);
+            }
+
+            if (id != 0)
+            {
+                comp.ApplyBoost(id, true);
+                comp.Clothings[wear] = id;
+            }
         }
 
         private void OnEnterVehicleRequested(Player player, InteractableVehicle vehicle, ref bool shouldAllow)
