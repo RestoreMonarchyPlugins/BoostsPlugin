@@ -143,7 +143,7 @@ namespace BoostsPlugin.Components
                 return $"+{(int)((boostDec - 1) * 100)}%";
             } else if (boostDec < 1)
             {
-                return $"-{(int)(boostDec * 100)}%";
+                return $"-{(int)((1 - boostDec) * 100)}%";
             } else 
             {
                 return "0%";

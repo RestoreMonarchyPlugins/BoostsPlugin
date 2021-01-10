@@ -168,10 +168,16 @@ namespace BoostsPlugin.Components
             ChangeJumpBooster(bestJumpBooster);
         }
 
-        public void ReloadBoosters()
+        public void ResetBoosters()
         {
             Boosters.Clear();
             Clothings.Clear();
+            EquippedBooster = null;
+        }
+
+        public void ReloadBoosters()
+        {
+            ResetBoosters();
 
             for (byte page = 0; page < 7; page++)
             {

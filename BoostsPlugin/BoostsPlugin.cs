@@ -9,6 +9,7 @@ using Rocket.Unturned;
 using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
+using Steamworks;
 using System;
 
 namespace BoostsPlugin
@@ -41,7 +42,8 @@ namespace BoostsPlugin
             U.Events.OnPlayerConnected += OnPlayerConnected;
             VehicleManager.onEnterVehicleRequested += OnEnterVehicleRequested;
             VehicleManager.onSwapSeatRequested += OnSwapSeatRequested;
-
+            
+            PlayerLife.onPlayerDied += OnPlayerDied;
             UnturnedPlayerEvents.OnPlayerWear += OnPlayerWear;
 
             Logger.Log($"{Name} {Assembly.GetName().Version} has been loaded!", ConsoleColor.Yellow);
@@ -56,6 +58,7 @@ namespace BoostsPlugin
             VehicleManager.onEnterVehicleRequested -= OnEnterVehicleRequested;
             VehicleManager.onSwapSeatRequested -= OnSwapSeatRequested;
 
+            PlayerLife.onPlayerDied -= OnPlayerDied;
             UnturnedPlayerEvents.OnPlayerWear -= OnPlayerWear;
 
             Logger.Log($"{Name} {Assembly.GetName().Version} has been unloaded!", ConsoleColor.Yellow);
@@ -100,6 +103,11 @@ namespace BoostsPlugin
                 player.Player.gameObject.AddComponent<PlayerBoostsComponent>();
                 player.Player.gameObject.AddComponent<PlayerUIComponent>();
             }, 2);
+        }
+
+        private void OnPlayerDied(PlayerLife sender, EDeathCause cause, ELimb limb, CSteamID instigator)
+        {
+            sender.GetComponent<PlayerBoostsComponent>().ResetBoosters();
         }
     }
 }
