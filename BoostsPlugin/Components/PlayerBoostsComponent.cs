@@ -33,14 +33,42 @@ namespace BoostsPlugin.Components
         public void ChangeSpeedBooster(Booster booster)
         {
             CurrentSpeedBooster = booster;
-            Player.movement.sendPluginSpeedMultiplier(CurrentSpeedBooster?.BoostItem?.SpeedBoost ?? 1);
-            OnBoostUpdated?.Invoke();
         }
 
         public void ChangeJumpBooster(Booster booster)
         {
-            CurrentJumpBooster = booster;
-            Player.movement.sendPluginJumpMultiplier(CurrentJumpBooster?.BoostItem?.JumpBoost ?? 1);
+            CurrentJumpBooster = booster;            
+        }
+
+        private void UpdateSpeedBoost()
+        {
+            float boost = CurrentSpeedBooster?.BoostItem?.SpeedBoost ?? 1;
+
+            if (boost > 1)
+            {
+                var badBoost = Boosters.OrderBy(x => x.BoostItem.SpeedBoost).FirstOrDefault(x => x.BoostItem.SpeedBoost < 1);
+
+                if (badBoost != null)
+                    boost = (badBoost.BoostItem.SpeedBoost + boost) / 2;
+            }
+            
+            Player.movement.sendPluginSpeedMultiplier(boost);
+            OnBoostUpdated?.Invoke();
+        }
+
+        private void UpdateJumpBoost()
+        {
+            float boost = CurrentJumpBooster?.BoostItem?.JumpBoost ?? 1;
+
+            if (boost > 1)
+            {
+                var badBoost = Boosters.OrderBy(x => x.BoostItem.JumpBoost).FirstOrDefault(x => x.BoostItem.JumpBoost < 1);
+
+                if (badBoost != null)
+                    boost = (badBoost.BoostItem.JumpBoost + boost) / 2;
+            }
+            
+            Player.movement.sendPluginJumpMultiplier(boost);
             OnBoostUpdated?.Invoke();
         }
 
@@ -115,11 +143,13 @@ namespace BoostsPlugin.Components
             {
                 ChangeSpeedBooster(booster);
             }
-
             if (CurrentJumpBooster == null || boostItem.JumpBoost > CurrentJumpBooster.BoostItem.JumpBoost)
             {
                 ChangeJumpBooster(booster);
             }
+
+            UpdateSpeedBoost();
+            UpdateJumpBoost();
 
             return booster;
         }
@@ -142,6 +172,9 @@ namespace BoostsPlugin.Components
 
             if (CurrentJumpBooster == booster)
                 UseBestJumpBooster();
+
+            UpdateSpeedBoost();
+            UpdateJumpBoost();
         }
 
         public void UseBestSpeedBooster()
