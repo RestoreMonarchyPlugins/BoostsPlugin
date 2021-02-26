@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Logger = Rocket.Core.Logging.Logger;
 
 namespace BoostsPlugin.Components
 {
@@ -86,7 +87,13 @@ namespace BoostsPlugin.Components
             Player.inventory.onInventoryAdded += OnInventoryAdded;
             Player.inventory.onInventoryRemoved += OnInventoryRemoved;
 
-            ReloadBoosters();
+            try
+            {
+                ReloadBoosters();
+            } catch (Exception e)
+            {
+                Logger.LogException(e);
+            }            
         }
 
         void OnDestroy()
@@ -234,7 +241,7 @@ namespace BoostsPlugin.Components
                 ApplyBoost(Player.clothing.glasses, true);
             if (Player.clothing.backpack != 0)
                 ApplyBoost(Player.clothing.backpack, true);
-            
+
             Clothings.Add(UnturnedPlayerEvents.Wearables.Shirt, Player.clothing.shirt);
             Clothings.Add(UnturnedPlayerEvents.Wearables.Pants, Player.clothing.pants);
             Clothings.Add(UnturnedPlayerEvents.Wearables.Vest, Player.clothing.vest);
