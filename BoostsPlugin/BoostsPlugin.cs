@@ -29,7 +29,8 @@ namespace RestoreMonarchy.BoostsPlugin
             Harmony = new Harmony(HarmonyInstanceId);
             Harmony.PatchAll(Assembly);
 
-            ArmorsDurabilityService = gameObject.AddComponent<ArmorsDurabilityService>();
+            if (Configuration.Instance.UseArmorDurabilities)
+                ArmorsDurabilityService = gameObject.AddComponent<ArmorsDurabilityService>();
 
             if (Level.isLoaded)
             {

@@ -8,6 +8,7 @@ namespace RestoreMonarchy.BoostsPlugin
         public ushort RiseEffectId { get; set; }
         public ushort DefaultEffectId { get; set; }
         public string UITemplate { get; set; }
+        public bool UseArmorDurabilities { get; set; }
         public ArmorClothing[] ArmorClothings { get; set; }
         public BoostItem[] BoosterItems { get; set; }
 
@@ -16,6 +17,7 @@ namespace RestoreMonarchy.BoostsPlugin
             RiseEffectId = 24523;
             DefaultEffectId = 8911;
             UITemplate = "default";
+            UseArmorDurabilities = false;
             ArmorClothings = new ArmorClothing[]
             {
                 new ArmorClothing()

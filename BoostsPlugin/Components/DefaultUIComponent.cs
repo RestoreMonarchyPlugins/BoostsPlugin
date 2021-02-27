@@ -15,7 +15,7 @@ namespace RestoreMonarchy.BoostsPlugin.Components
     {
         private BoostsPlugin pluginInstance => BoostsPlugin.Instance;
 
-        public const short Key = 24523;
+        public const short Key = 8911;
 
         public Player Player { get; private set; }
 
@@ -31,7 +31,7 @@ namespace RestoreMonarchy.BoostsPlugin.Components
 
         void Start()
         {
-            EffectManager.sendUIEffect(pluginInstance.Configuration.Instance.RiseEffectId, Key, CSteamID, true);
+            EffectManager.sendUIEffect(pluginInstance.Configuration.Instance.DefaultEffectId, Key, CSteamID, true);
             RefreshArmorUI();
             RefreshBoostsUI();
 
@@ -52,7 +52,7 @@ namespace RestoreMonarchy.BoostsPlugin.Components
 
             BoostsComponent.OnBoostUpdated -= RefreshBoostsUI;
 
-            EffectManager.askEffectClearByID(pluginInstance.Configuration.Instance.RiseEffectId, CSteamID);
+            EffectManager.askEffectClearByID(pluginInstance.Configuration.Instance.DefaultEffectId, CSteamID);
         }
 
         private void RefreshArmorUI()

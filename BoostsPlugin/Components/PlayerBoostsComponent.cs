@@ -211,13 +211,13 @@ namespace RestoreMonarchy.BoostsPlugin.Components
         public void ResetBoosters()
         {
             Boosters.Clear();
-            Clothings.Clear();
             EquippedBooster = null;
         }
 
         public void ReloadBoosters()
         {
             ResetBoosters();
+            Clothings.Clear();
 
             for (byte page = 0; page < 7; page++)
             {
