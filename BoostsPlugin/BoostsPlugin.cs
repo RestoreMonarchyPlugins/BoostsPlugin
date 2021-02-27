@@ -1,6 +1,6 @@
-﻿using BoostsPlugin.Components;
-using BoostsPlugin.Modifiers;
-using BoostsPlugin.Services;
+﻿using RestoreMonarchy.BoostsPlugin.Components;
+using RestoreMonarchy.BoostsPlugin.Modifiers;
+using RestoreMonarchy.BoostsPlugin.Services;
 using HarmonyLib;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
@@ -12,7 +12,7 @@ using SDG.Unturned;
 using Steamworks;
 using System;
 
-namespace BoostsPlugin
+namespace RestoreMonarchy.BoostsPlugin
 {
     public class BoostsPlugin : RocketPlugin<BoostsConfiguration>
     {
@@ -101,7 +101,11 @@ namespace BoostsPlugin
             TaskDispatcher.QueueOnMainThread(() =>
             {
                 player.Player.gameObject.AddComponent<PlayerBoostsComponent>();
-                player.Player.gameObject.AddComponent<PlayerUIComponent>();
+
+                if (Configuration.Instance.UITemplate.Equals("rise", StringComparison.OrdinalIgnoreCase))
+                    player.Player.gameObject.AddComponent<RiseUIComponent>();
+                else
+                    player.Player.gameObject.AddComponent<DefaultUIComponent>();
             }, 2);
         }
 

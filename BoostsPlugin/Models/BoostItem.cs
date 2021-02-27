@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoostsPlugin.Models
+namespace RestoreMonarchy.BoostsPlugin.Models
 {
     public class BoostItem
     {

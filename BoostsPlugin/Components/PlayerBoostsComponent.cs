@@ -1,4 +1,4 @@
-﻿using BoostsPlugin.Models;
+﻿using RestoreMonarchy.BoostsPlugin.Models;
 using Rocket.Unturned.Chat;
 using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Logger = Rocket.Core.Logging.Logger;
 
-namespace BoostsPlugin.Components
+namespace RestoreMonarchy.BoostsPlugin.Components
 {
     public class PlayerBoostsComponent : MonoBehaviour
     {

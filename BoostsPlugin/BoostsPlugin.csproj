@@ -7,7 +7,7 @@
     <ProjectGuid>{FDA13504-14E4-491B-97E1-8ABEBDC433C4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BoostsPlugin</RootNamespace>
+    <RootNamespace>RestoreMonarchy.BoostsPlugin</RootNamespace>
     <AssemblyName>BoostsPlugin</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -71,11 +71,14 @@
   <ItemGroup>
     <Compile Include="BoostsConfiguration.cs" />
     <Compile Include="BoostsPlugin.cs" />
+    <Compile Include="Components\DefaultUIComponent.cs" />
     <Compile Include="Components\PlayerBoostsComponent.cs" />
-    <Compile Include="Components\PlayerUIComponent.cs" />
+    <Compile Include="Components\RiseUIComponent.cs" />
+    <Compile Include="Helpers\FormatHelper.cs" />
     <Compile Include="Models\ArmorClothing.cs" />
     <Compile Include="Models\Booster.cs" />
     <Compile Include="Models\BoostItem.cs" />
+    <Compile Include="Models\IArmorsUI.cs" />
     <Compile Include="Modifiers\ItemClothingModifier.cs" />
     <Compile Include="Patches\PlayerClothing_Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

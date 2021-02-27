@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace BoostsPlugin.Services
+namespace RestoreMonarchy.BoostsPlugin.Services
 {
     public class ArmorsDurabilityService : MonoBehaviour
     {

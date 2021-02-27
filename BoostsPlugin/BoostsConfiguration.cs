@@ -1,17 +1,21 @@
-﻿using BoostsPlugin.Models;
+﻿using RestoreMonarchy.BoostsPlugin.Models;
 using Rocket.API;
 
-namespace BoostsPlugin
+namespace RestoreMonarchy.BoostsPlugin
 {
     public class BoostsConfiguration : IRocketPluginConfiguration
     {
-        public ushort EffectId { get; set; }
+        public ushort RiseEffectId { get; set; }
+        public ushort DefaultEffectId { get; set; }
+        public string UITemplate { get; set; }
         public ArmorClothing[] ArmorClothings { get; set; }
         public BoostItem[] BoosterItems { get; set; }
 
         public void LoadDefaults()
         {
-            EffectId = 24523;
+            RiseEffectId = 24523;
+            DefaultEffectId = 8911;
+            UITemplate = "default";
             ArmorClothings = new ArmorClothing[]
             {
                 new ArmorClothing()
