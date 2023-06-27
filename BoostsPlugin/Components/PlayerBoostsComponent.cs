@@ -146,11 +146,17 @@ namespace RestoreMonarchy.BoostsPlugin.Components
             var booster = new Booster(boostItem);
             Boosters.Add(booster);
 
-            if (CurrentSpeedBooster == null || boostItem.SpeedBoost > CurrentSpeedBooster.BoostItem.SpeedBoost)
+            if (CurrentSpeedBooster == null 
+                || (boostItem.SpeedBoost > 1 && boostItem.SpeedBoost > CurrentSpeedBooster.BoostItem.SpeedBoost)
+                || (boostItem.SpeedBoost < 1 && boostItem.SpeedBoost < CurrentSpeedBooster.BoostItem.SpeedBoost))
             {
                 ChangeSpeedBooster(booster);
             }
-            if (CurrentJumpBooster == null || boostItem.JumpBoost > CurrentJumpBooster.BoostItem.JumpBoost)
+
+
+            if (CurrentJumpBooster == null 
+                || (boostItem.SpeedBoost > 1 && boostItem.JumpBoost > CurrentJumpBooster.BoostItem.JumpBoost)
+                || (boostItem.SpeedBoost < 1 && boostItem.JumpBoost < CurrentJumpBooster.BoostItem.JumpBoost))
             {
                 ChangeJumpBooster(booster);
             }

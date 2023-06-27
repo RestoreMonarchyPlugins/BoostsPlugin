@@ -69,6 +69,11 @@ namespace RestoreMonarchy.BoostsPlugin
         {
             var comp = player.GetComponent<PlayerBoostsComponent>();
             
+            if (comp == null)
+            {
+                return;
+            }
+
             if (comp.Clothings[wear] != 0)
             {
                 comp.RemoveBoost(comp.Clothings[wear], true);
