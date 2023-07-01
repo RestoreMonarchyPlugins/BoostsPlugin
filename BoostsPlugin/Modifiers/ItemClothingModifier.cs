@@ -1,14 +1,9 @@
-﻿using RestoreMonarchy.BoostsPlugin.Models;
+﻿using RestoreMonarchy.Boosts.Models;
 using Rocket.Core.Logging;
 using SDG.Unturned;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RestoreMonarchy.BoostsPlugin.Modifiers
+namespace RestoreMonarchy.Boosts.Modifiers
 {
     public class ItemClothingModifier
     {

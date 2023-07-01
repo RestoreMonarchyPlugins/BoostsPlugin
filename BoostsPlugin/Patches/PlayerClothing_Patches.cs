@@ -1,14 +1,8 @@
-﻿using RestoreMonarchy.BoostsPlugin.Components;
-using RestoreMonarchy.BoostsPlugin.Models;
-using HarmonyLib;
+﻿using HarmonyLib;
+using RestoreMonarchy.Boosts.Models;
 using SDG.Unturned;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RestoreMonarchy.BoostsPlugin.Patches
+namespace RestoreMonarchy.Boosts.Patches
 {
     [HarmonyPatch(typeof(PlayerClothing))]
     class PlayerClothing_Patches

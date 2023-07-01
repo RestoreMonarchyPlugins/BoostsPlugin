@@ -1,7 +1,7 @@
-﻿using RestoreMonarchy.BoostsPlugin.Models;
+﻿using RestoreMonarchy.Boosts.Models;
 using Rocket.API;
 
-namespace RestoreMonarchy.BoostsPlugin
+namespace RestoreMonarchy.Boosts
 {
     public class BoostsConfiguration : IRocketPluginConfiguration
     {

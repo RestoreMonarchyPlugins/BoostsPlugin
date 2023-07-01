@@ -1,6 +1,6 @@
-﻿using RestoreMonarchy.BoostsPlugin.Components;
-using RestoreMonarchy.BoostsPlugin.Modifiers;
-using RestoreMonarchy.BoostsPlugin.Services;
+﻿using RestoreMonarchy.Boosts.Components;
+using RestoreMonarchy.Boosts.Modifiers;
+using RestoreMonarchy.Boosts.Services;
 using HarmonyLib;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
@@ -11,8 +11,9 @@ using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Steamworks;
 using System;
+using RestoreMonarchy.Boosts.Helpers;
 
-namespace RestoreMonarchy.BoostsPlugin
+namespace RestoreMonarchy.Boosts
 {
     public class BoostsPlugin : RocketPlugin<BoostsConfiguration>
     {
@@ -20,7 +21,7 @@ namespace RestoreMonarchy.BoostsPlugin
 
         public ArmorsDurabilityService ArmorsDurabilityService { get; private set; }
 
-        public const string HarmonyInstanceId = "com.restoremonarchy.boostsplugin";
+        public const string HarmonyInstanceId = "com.restoremonarchy.boosts";
         private Harmony Harmony { get; set; }
 
         protected override void Load()
@@ -30,7 +31,10 @@ namespace RestoreMonarchy.BoostsPlugin
             Harmony.PatchAll(Assembly);
 
             if (Configuration.Instance.UseArmorDurabilities)
+            {
                 ArmorsDurabilityService = gameObject.AddComponent<ArmorsDurabilityService>();
+            }
+                
 
             if (Level.isLoaded)
             {
@@ -104,15 +108,16 @@ namespace RestoreMonarchy.BoostsPlugin
 
         private void OnPlayerConnected(UnturnedPlayer player)
         {
-            TaskDispatcher.QueueOnMainThread(() =>
+            ThreadHelper.QueueOnMainThread(() =>
             {
-                player.Player.gameObject.AddComponent<PlayerBoostsComponent>();
+                if (player.Player == null)
+                {
+                    return;
+                }
 
-                if (Configuration.Instance.UITemplate.Equals("rise", StringComparison.OrdinalIgnoreCase))
-                    player.Player.gameObject.AddComponent<RiseUIComponent>();
-                else
-                    player.Player.gameObject.AddComponent<DefaultUIComponent>();
-            }, 2);
+                player.Player.gameObject.AddComponent<PlayerBoostsComponent>();
+                player.Player.gameObject.AddComponent<DefaultUIComponent>();
+            }, 1);
         }
 
         private void OnPlayerDied(PlayerLife sender, EDeathCause cause, ELimb limb, CSteamID instigator)

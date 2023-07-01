@@ -1,17 +1,13 @@
-﻿using RestoreMonarchy.BoostsPlugin.Models;
-using Rocket.Unturned.Chat;
+﻿using RestoreMonarchy.Boosts.Models;
 using Rocket.Unturned.Events;
-using Rocket.Unturned.Player;
 using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Logger = Rocket.Core.Logging.Logger;
 
-namespace RestoreMonarchy.BoostsPlugin.Components
+namespace RestoreMonarchy.Boosts.Components
 {
     public class PlayerBoostsComponent : MonoBehaviour
     {
