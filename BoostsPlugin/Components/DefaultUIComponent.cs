@@ -2,6 +2,7 @@
 using RestoreMonarchy.Boosts.Models;
 using SDG.NetTransport;
 using SDG.Unturned;
+using System;
 using UnityEngine;
 
 namespace RestoreMonarchy.Boosts.Components
@@ -35,6 +36,7 @@ namespace RestoreMonarchy.Boosts.Components
             Player.clothing.onVestUpdated += RefreshVestArmor;
             Player.clothing.onPantsUpdated += RefreshPantsArmor;
 
+            Player.life.onLifeUpdated += OnLifeUpdated;
             BoostsComponent.OnBoostUpdated += RefreshBoostsUI;
         }
 
@@ -45,9 +47,18 @@ namespace RestoreMonarchy.Boosts.Components
             Player.clothing.onVestUpdated -= RefreshVestArmor;
             Player.clothing.onPantsUpdated -= RefreshPantsArmor;
 
+            Player.life.onLifeUpdated -= OnLifeUpdated;
             BoostsComponent.OnBoostUpdated -= RefreshBoostsUI;
 
             EffectManager.askEffectClearByID(pluginInstance.Configuration.Instance.DefaultEffectId, TransportConnection);
+        }
+
+        private void OnLifeUpdated(bool isDead)
+        {
+            if (isDead)
+            {
+                RefreshArmorUI();            
+            }
         }
 
         private void RefreshArmorUI()

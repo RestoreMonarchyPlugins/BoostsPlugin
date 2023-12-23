@@ -82,6 +82,7 @@ namespace RestoreMonarchy.Boosts.Components
             Player.equipment.onDequipRequested += OnDequipRequested;
             Player.inventory.onInventoryAdded += OnInventoryAdded;
             Player.inventory.onInventoryRemoved += OnInventoryRemoved;
+            Player.life.onLifeUpdated += OnLifeUpdated;
 
             try
             {
@@ -98,6 +99,7 @@ namespace RestoreMonarchy.Boosts.Components
             Player.equipment.onDequipRequested -= OnDequipRequested;
             Player.inventory.onInventoryAdded -= OnInventoryAdded;
             Player.inventory.onInventoryRemoved -= OnInventoryRemoved;
+            Player.life.onLifeUpdated -= OnLifeUpdated;
         }
 
         private void OnEquipRequested(PlayerEquipment equipment, ItemJar jar, ItemAsset asset, ref bool shouldAllow)
@@ -121,6 +123,17 @@ namespace RestoreMonarchy.Boosts.Components
         private void OnInventoryRemoved(byte page, byte index, ItemJar jar)
         {
             RemoveBoost(jar.item.id, false);
+        }
+
+        private void OnLifeUpdated(bool isDead)
+        {
+            if (isDead)
+            {
+                ChangeSpeedBooster(null);
+                ChangeJumpBooster(null);
+                UpdateSpeedBoost();
+                UpdateJumpBoost();
+            }
         }
 
         public Booster ApplyBoost(ushort itemId, bool isEquip)
